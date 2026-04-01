@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { Routes, Route, Link, useLocation } from "react-router-dom";
 import { Login, Signup } from "./pages/Auth";
+import { Workspace } from "./pages/Workspace";
 import "./App.css";
 
 // Landing Page Component
@@ -164,11 +165,11 @@ const LandingPage = () => {
 
 function App() {
   const location = useLocation();
-  const isAuthPage = location.pathname === "/login" || location.pathname === "/signup";
+  const isAuthPage = location.pathname === "/login" || location.pathname === "/signup" || location.pathname === "/workspace";
 
   return (
     <div className="app">
-      {/* Navbar - Hidden on Auth Pages */}
+      {/* Navbar - Hidden on Auth and Workspace Pages */}
       {!isAuthPage && (
         <nav className="navbar glass">
           <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
@@ -202,6 +203,7 @@ function App() {
           <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/workspace" element={<Workspace />} />
         </Routes>
       </main>
     </div>

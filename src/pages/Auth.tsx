@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { 
   Brain, 
   Mail, 
@@ -10,8 +10,15 @@ import {
   Zap, 
   CheckSquare, 
   Search,
-  ChevronLeft
+  ChevronLeft,
+  Loader2
 } from "lucide-react";
+import { 
+  signInWithEmailAndPassword, 
+  createUserWithEmailAndPassword, 
+  updateProfile 
+} from "firebase/auth";
+import { auth } from "../firebase";
 import "./Auth.css";
 
 const AuthSidePanel = ({ type }: { type: 'login' | 'signup' }) => (
@@ -54,10 +61,25 @@ const AuthSidePanel = ({ type }: { type: 'login' | 'signup' }) => (
 export const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Login attempt:", { email, password });
+    setError("");
+    setLoading(true);
+
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      console.log("Login successful");
+      navigate("/workspace");
+    } catch (err: any) {
+      console.error("Login error:", err);
+      setError(err.message.replace("Firebase: ", ""));
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -75,6 +97,12 @@ export const Login = () => {
           </header>
 
           <form onSubmit={handleSubmit} className="form-body">
+            {error && (
+              <div style={{ background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', padding: '12px', borderRadius: '8px', fontSize: '0.9rem', border: '1px solid rgba(239, 68, 68, 0.2)' }}>
+                {error}
+              </div>
+            )}
+            
             <div className="input-wrapper">
               <Mail className="input-icon" size={20} />
               <input 
@@ -103,8 +131,9 @@ export const Login = () => {
               <a href="#" className="auth-switch-link" style={{ fontSize: '0.85rem' }}>Forgot password?</a>
             </div>
 
-            <button type="submit" className="auth-btn-submit">
-              Log In <ArrowRight size={20} />
+            <button type="submit" className="auth-btn-submit" disabled={loading}>
+              {loading ? <Loader2 className="animate-spin" size={20} /> : "Log In"}
+              {!loading && <ArrowRight size={20} />}
             </button>
 
             <div className="auth-divider">OR</div>
@@ -132,10 +161,29 @@ export const Signup = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Signup attempt:", { name, email, password });
+    setError("");
+    setLoading(true);
+
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      // Update the user's name in their profile
+      await updateProfile(userCredential.user, {
+        displayName: name
+      });
+      console.log("Signup successful");
+      navigate("/workspace");
+    } catch (err: any) {
+      console.error("Signup error:", err);
+      setError(err.message.replace("Firebase: ", ""));
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -153,6 +201,12 @@ export const Signup = () => {
           </header>
 
           <form onSubmit={handleSubmit} className="form-body">
+            {error && (
+              <div style={{ background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', padding: '12px', borderRadius: '8px', fontSize: '0.9rem', border: '1px solid rgba(239, 68, 68, 0.2)' }}>
+                {error}
+              </div>
+            )}
+            
             <div className="input-wrapper">
               <User className="input-icon" size={20} />
               <input 
@@ -193,8 +247,9 @@ export const Signup = () => {
               By signing up, you agree to our Terms and Privacy Policy.
             </p>
 
-            <button type="submit" className="auth-btn-submit">
-              Sign Up <ArrowRight size={20} />
+            <button type="submit" className="auth-btn-submit" disabled={loading}>
+              {loading ? <Loader2 className="animate-spin" size={20} /> : "Create Account"}
+              {!loading && <ArrowRight size={20} />}
             </button>
 
             <div className="auth-divider">OR</div>
