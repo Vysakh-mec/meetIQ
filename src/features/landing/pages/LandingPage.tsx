@@ -1,11 +1,11 @@
-import { 
-  Zap, 
-  CheckSquare, 
-  Search, 
+import {
+  Zap,
+  CheckSquare,
+  Search,
   ArrowRight,
   MessageSquare,
   Users,
-  Target 
+  Target,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Navbar } from "@components/Navbar";
@@ -15,17 +15,20 @@ export const LandingPage = () => {
   return (
     <div style={styles.appContainer}>
       <Navbar />
-      
+
       {/* Hero Section */}
       <header style={styles.heroSection}>
         <span style={styles.heroTag}>Meeting Intelligence Hub</span>
         <h1 style={styles.heroTitle}>
-          Turn your <span style={theme.effects.gradientText}>Conversations</span> into
-          Actionable <span style={theme.effects.gradientText}>Intelligence</span>.
+          Turn your{" "}
+          <span style={theme.effects.gradientText}>Conversations</span> into
+          Actionable{" "}
+          <span style={theme.effects.gradientText}>Intelligence</span>.
         </h1>
         <p style={styles.heroSubtitle}>
-          Transform raw meeting transcripts into structured outcomes. meetIQ automatically
-          extracts decisions and action items so your team can focus on execution.
+          Transform raw meeting transcripts into structured outcomes. meetIQ
+          automatically extracts decisions and action items so your team can
+          focus on execution.
         </p>
         <div style={styles.heroBtns}>
           <Link to="/signup" style={styles.btnPrimary}>
@@ -59,8 +62,8 @@ export const LandingPage = () => {
             <div>
               <h3 style={styles.featureTitle}>Action Tracking</h3>
               <p style={styles.featureDesc}>
-                Clearly maps tasks to owners and deadlines. Ensure that important 
-                responsibilities are never lost in the dialogue.
+                Clearly maps tasks to owners and deadlines. Ensure that
+                important responsibilities are never lost in the dialogue.
               </p>
             </div>
           </div>
@@ -73,7 +76,7 @@ export const LandingPage = () => {
             <div>
               <h3 style={styles.featureTitle}>Contextual Query System</h3>
               <p style={styles.featureDesc}>
-                Ask natural language questions about past meetings and get 
+                Ask natural language questions about past meetings and get
                 context-aware answers with direct references to the transcript.
               </p>
             </div>
@@ -83,21 +86,34 @@ export const LandingPage = () => {
 
       {/* About Section */}
       <section id="about" style={{ ...styles.container, padding: "80px 0" }}>
-        <div style={{ ...theme.effects.glass, padding: "60px", borderRadius: theme.radius.lg }}>
+        <div
+          style={{
+            ...theme.effects.glass,
+            padding: "60px",
+            borderRadius: theme.radius.lg,
+          }}
+        >
           <div style={styles.aboutGrid}>
             <div>
               <h2 style={{ fontSize: "2.5rem", marginBottom: "20px" }}>
                 Our <span style={theme.effects.gradientText}>Mission</span>
               </h2>
-              <p style={{ ...styles.featureDesc, fontSize: "1.1rem", marginBottom: "24px" }}>
-                Organizations conduct numerous meetings every week, generating lengthy transcripts 
-                where critical information often gets buried. This leads to repeated discussions 
-                and missed responsibilities.
+              <p
+                style={{
+                  ...styles.featureDesc,
+                  fontSize: "1.1rem",
+                  marginBottom: "24px",
+                }}
+              >
+                Organizations conduct numerous meetings every week, generating
+                lengthy transcripts where critical information often gets
+                buried. This leads to repeated discussions and missed
+                responsibilities.
               </p>
               <p style={{ ...styles.featureDesc, fontSize: "1.1rem" }}>
-                meetIQ was built to eliminate these inefficiencies. We transform raw dialogue 
-                into structured, actionable intelligence, helping teams move directly 
-                toward execution and accountability.
+                meetIQ was built to eliminate these inefficiencies. We transform
+                raw dialogue into structured, actionable intelligence, helping
+                teams move directly toward execution and accountability.
               </p>
             </div>
             <div style={styles.missionCardList}>

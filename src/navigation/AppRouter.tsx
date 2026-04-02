@@ -1,7 +1,8 @@
 import { Routes, Route } from "react-router-dom";
-import { Login, Signup } from "@features/auth/Auth";
-import { Workspace } from "@features/workspace/Workspace";
-import { LandingPage } from "@features/landing/LandingPage";
+import { LoginPage as Login } from "@features/auth/pages/LoginPage";
+import { SignupPage as Signup } from "@features/auth/pages/SignupPage";
+import { WorkspacePage as Workspace } from "@features/workspace/pages/WorkspacePage";
+import { LandingPage } from "@features/landing/pages/LandingPage";
 
 export const AppRouter = () => {
   return (
