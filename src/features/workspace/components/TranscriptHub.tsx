@@ -1,13 +1,40 @@
 import { Upload } from "lucide-react";
 import { theme } from "@/constants/theme";
+import { IntelligenceSummary } from "./IntelligenceSummary";
+
+interface Action {
+  person: string;
+  task: string;
+  deadline: string;
+}
+
+interface Issue {
+  issue: string;
+  raisedBy: string;
+}
+
+interface IntelligenceData {
+  goal: string;
+  decisions: string[];
+  actions: Action[];
+  issues: Issue[];
+  summary: string;
+  highlights: string[];
+}
 
 interface TranscriptHubProps {
   transcript: string | null;
   fileInputRef: React.RefObject<HTMLInputElement | null>;
   onFileUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  intelligenceData: IntelligenceData | null;
 }
 
-export const TranscriptHub = ({ transcript, fileInputRef, onFileUpload }: TranscriptHubProps) => (
+export const TranscriptHub = ({ 
+  transcript, 
+  fileInputRef, 
+  onFileUpload,
+  intelligenceData
+}: TranscriptHubProps) => (
   <section style={styles.transcriptSection}>
     {!transcript ? (
       <div style={styles.uploadArea}>
@@ -20,13 +47,13 @@ export const TranscriptHub = ({ transcript, fileInputRef, onFileUpload }: Transc
               <Upload size={32} color={theme.colors.primary} />
             </div>
           </div>
-          <h3>Drop your transcript here</h3>
-          <p style={{ color: theme.colors.textSecondary }}>Support for .txt files. Or click to browse.</p>
+          <h3>Analyze Transcript</h3>
+          <p style={{ color: theme.colors.textSecondary }}>Choose a .txt or .vtt file to extract intelligence.</p>
           <input 
             type="file" 
             ref={fileInputRef} 
             style={{ display: 'none' }} 
-            accept=".txt"
+            accept=".txt,.vtt"
             onChange={onFileUpload} 
           />
         </div>
@@ -34,11 +61,17 @@ export const TranscriptHub = ({ transcript, fileInputRef, onFileUpload }: Transc
     ) : (
       <>
         <header style={styles.transcriptHeader}>
-          <h2 style={{ ...theme.effects.gradientText, fontSize: '1.75rem', fontWeight: 800 }}>Active Transcript</h2>
-          <span style={{ fontSize: '0.85rem', color: theme.colors.textMuted }}>Analyzed with meeting intelligence</span>
+          <h2 style={{ ...theme.effects.gradientText, fontSize: '1.75rem', fontWeight: 800 }}>Active Workspace</h2>
+          <span style={{ fontSize: '0.85rem', color: theme.colors.textMuted }}>Meeting context and extracted insights</span>
         </header>
-        <div style={{ ...styles.transcriptDisplay, ...theme.effects.glass }}>
-          {transcript}
+        
+        <div style={{ ...styles.transcriptContainer }}>
+          <div style={{ ...styles.transcriptDisplay, ...theme.effects.glass }}>
+            <h4 style={styles.rawTitle}>RAW TRANSCRIPT</h4>
+            {transcript}
+          </div>
+          
+          <IntelligenceSummary data={intelligenceData} />
         </div>
       </>
     )}
@@ -82,11 +115,23 @@ const styles: Record<string, React.CSSProperties> = {
     justifyContent: "space-between",
     alignItems: "center",
   },
+  transcriptContainer: {
+    display: "flex",
+    flexDirection: "column",
+    gap: "32px",
+  },
   transcriptDisplay: {
     padding: "40px",
     borderRadius: theme.radius.lg,
     lineHeight: 1.8,
     whiteSpace: "pre-wrap",
-    flex: 1,
+    backgroundColor: "rgba(10, 15, 25, 0.4)",
+  },
+  rawTitle: {
+    fontSize: "0.75rem",
+    fontWeight: 700,
+    letterSpacing: "1px",
+    color: theme.colors.textMuted,
+    marginBottom: "20px",
   },
 };
