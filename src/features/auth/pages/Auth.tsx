@@ -1,35 +1,35 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { 
-  Brain, 
-  Mail, 
-  Lock, 
-  User, 
-  Globe, 
-  ArrowRight, 
-  Zap, 
-  CheckSquare, 
+import {
+  Brain,
+  Mail,
+  Lock,
+  User,
+  Globe,
+  ArrowRight,
+  Zap,
+  CheckSquare,
   Search,
   ChevronLeft,
-  Loader2
+  Loader2,
 } from "lucide-react";
-import { 
-  signInWithEmailAndPassword, 
-  createUserWithEmailAndPassword, 
-  updateProfile 
+import {
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  updateProfile,
 } from "firebase/auth";
-import { auth } from "../firebase";
+import { auth } from "@/firebase";
 import "./Auth.css";
 
-const AuthSidePanel = ({ type }: { type: 'login' | 'signup' }) => (
+const AuthSidePanel = ({ type }: { type: "login" | "signup" }) => (
   <div className="auth-side-panel">
-    <Link to="/" className="side-logo" style={{ textDecoration: 'none' }}>
+    <Link to="/" className="side-logo" style={{ textDecoration: "none" }}>
       <Brain className="logo-icon" size={32} />
       <span>meetIQ</span>
     </Link>
     <h2 className="side-title">
-      {type === 'login' 
-        ? "Welcome back to your meeting hub." 
+      {type === "login"
+        ? "Welcome back to your meeting hub."
         : "Unlock the power of your conversations."}
     </h2>
     <div className="side-features">
@@ -86,10 +86,20 @@ export const Login = () => {
     <div className="auth-page">
       <div className="auth-container">
         <AuthSidePanel type="login" />
-        
+
         <div className="auth-form-panel">
           <header className="auth-form-header">
-            <Link to="/" className="auth-switch-link" style={{ display: 'flex', alignItems: 'center', gap: '4px', marginBottom: '20px', fontSize: '0.9rem' }}>
+            <Link
+              to="/"
+              className="auth-switch-link"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "4px",
+                marginBottom: "20px",
+                fontSize: "0.9rem",
+              }}
+            >
               <ChevronLeft size={16} /> Back to home
             </Link>
             <h1 className="gradient-text">Log In</h1>
@@ -98,28 +108,37 @@ export const Login = () => {
 
           <form onSubmit={handleSubmit} className="form-body">
             {error && (
-              <div style={{ background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', padding: '12px', borderRadius: '8px', fontSize: '0.9rem', border: '1px solid rgba(239, 68, 68, 0.2)' }}>
+              <div
+                style={{
+                  background: "rgba(239, 68, 68, 0.1)",
+                  color: "#ef4444",
+                  padding: "12px",
+                  borderRadius: "8px",
+                  fontSize: "0.9rem",
+                  border: "1px solid rgba(239, 68, 68, 0.2)",
+                }}
+              >
                 {error}
               </div>
             )}
-            
+
             <div className="input-wrapper">
               <Mail className="input-icon" size={20} />
-              <input 
-                className="auth-input" 
-                type="email" 
+              <input
+                className="auth-input"
+                type="email"
                 placeholder="Email address"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
               />
             </div>
-            
+
             <div className="input-wrapper">
               <Lock className="input-icon" size={20} />
-              <input 
-                className="auth-input" 
-                type="password" 
+              <input
+                className="auth-input"
+                type="password"
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -127,12 +146,26 @@ export const Login = () => {
               />
             </div>
 
-            <div style={{ textAlign: 'right', marginTop: '-10px' }}>
-              <a href="#" className="auth-switch-link" style={{ fontSize: '0.85rem' }}>Forgot password?</a>
+            <div style={{ textAlign: "right", marginTop: "-10px" }}>
+              <a
+                href="#"
+                className="auth-switch-link"
+                style={{ fontSize: "0.85rem" }}
+              >
+                Forgot password?
+              </a>
             </div>
 
-            <button type="submit" className="auth-btn-submit" disabled={loading}>
-              {loading ? <Loader2 className="animate-spin" size={20} /> : "Log In"}
+            <button
+              type="submit"
+              className="auth-btn-submit"
+              disabled={loading}
+            >
+              {loading ? (
+                <Loader2 className="animate-spin" size={20} />
+              ) : (
+                "Log In"
+              )}
               {!loading && <ArrowRight size={20} />}
             </button>
 
@@ -148,7 +181,10 @@ export const Login = () => {
             </div>
 
             <p className="auth-switch">
-              New to meetIQ? <Link to="/signup" className="auth-switch-link">Create account</Link>
+              New to meetIQ?{" "}
+              <Link to="/signup" className="auth-switch-link">
+                Create account
+              </Link>
             </p>
           </form>
         </div>
@@ -171,10 +207,14 @@ export const Signup = () => {
     setLoading(true);
 
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password,
+      );
       // Update the user's name in their profile
       await updateProfile(userCredential.user, {
-        displayName: name
+        displayName: name,
       });
       console.log("Signup successful");
       navigate("/workspace");
@@ -193,7 +233,17 @@ export const Signup = () => {
 
         <div className="auth-form-panel">
           <header className="auth-form-header">
-            <Link to="/" className="auth-switch-link" style={{ display: 'flex', alignItems: 'center', gap: '4px', marginBottom: '20px', fontSize: '0.9rem' }}>
+            <Link
+              to="/"
+              className="auth-switch-link"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "4px",
+                marginBottom: "20px",
+                fontSize: "0.9rem",
+              }}
+            >
               <ChevronLeft size={16} /> Back to home
             </Link>
             <h1 className="gradient-text">Sign Up</h1>
@@ -202,16 +252,25 @@ export const Signup = () => {
 
           <form onSubmit={handleSubmit} className="form-body">
             {error && (
-              <div style={{ background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', padding: '12px', borderRadius: '8px', fontSize: '0.9rem', border: '1px solid rgba(239, 68, 68, 0.2)' }}>
+              <div
+                style={{
+                  background: "rgba(239, 68, 68, 0.1)",
+                  color: "#ef4444",
+                  padding: "12px",
+                  borderRadius: "8px",
+                  fontSize: "0.9rem",
+                  border: "1px solid rgba(239, 68, 68, 0.2)",
+                }}
+              >
                 {error}
               </div>
             )}
-            
+
             <div className="input-wrapper">
               <User className="input-icon" size={20} />
-              <input 
-                className="auth-input" 
-                type="text" 
+              <input
+                className="auth-input"
+                type="text"
                 placeholder="Full Name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
@@ -221,9 +280,9 @@ export const Signup = () => {
 
             <div className="input-wrapper">
               <Mail className="input-icon" size={20} />
-              <input 
-                className="auth-input" 
-                type="email" 
+              <input
+                className="auth-input"
+                type="email"
                 placeholder="Email address"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -233,9 +292,9 @@ export const Signup = () => {
 
             <div className="input-wrapper">
               <Lock className="input-icon" size={20} />
-              <input 
-                className="auth-input" 
-                type="password" 
+              <input
+                className="auth-input"
+                type="password"
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -243,12 +302,26 @@ export const Signup = () => {
               />
             </div>
 
-            <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', lineHeight: '1.4' }}>
+            <p
+              style={{
+                fontSize: "0.85rem",
+                color: "var(--text-muted)",
+                lineHeight: "1.4",
+              }}
+            >
               By signing up, you agree to our Terms and Privacy Policy.
             </p>
 
-            <button type="submit" className="auth-btn-submit" disabled={loading}>
-              {loading ? <Loader2 className="animate-spin" size={20} /> : "Create Account"}
+            <button
+              type="submit"
+              className="auth-btn-submit"
+              disabled={loading}
+            >
+              {loading ? (
+                <Loader2 className="animate-spin" size={20} />
+              ) : (
+                "Create Account"
+              )}
               {!loading && <ArrowRight size={20} />}
             </button>
 
@@ -264,7 +337,10 @@ export const Signup = () => {
             </div>
 
             <p className="auth-switch">
-              Already have an account? <Link to="/login" className="auth-switch-link">Log In</Link>
+              Already have an account?{" "}
+              <Link to="/login" className="auth-switch-link">
+                Log In
+              </Link>
             </p>
           </form>
         </div>
