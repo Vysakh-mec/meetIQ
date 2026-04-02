@@ -1,8 +1,7 @@
 import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
+import { browserLocalPersistence, getAuth, setPersistence } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
-// TODO: Replace with your Firebase configuration from the Console
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_API_KEY,
   authDomain: import.meta.env.VITE_AUTH_DOMAIN,
@@ -15,6 +14,13 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 // Export instances
+
 export const auth = getAuth(app);
 export const db = getFirestore(app);
+
+setPersistence(auth, browserLocalPersistence).then(() => {
+  console.log("Persistence set successfully");
+}).catch((error) => {
+  console.log("Error setting persistence:", error);
+})
 export default app;

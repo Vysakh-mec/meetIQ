@@ -10,8 +10,12 @@ import {
 import { Link } from "react-router-dom";
 import { Navbar } from "@components/Navbar";
 import { theme } from "@/constants/theme";
+import { useSelector } from "react-redux";
+import type { RootState } from "@/redux/store";
 
 export const LandingPage = () => {
+  const session = useSelector((state: RootState) => state.auth);
+  console.log("Session :", session);
   return (
     <div style={styles.appContainer}>
       <Navbar />

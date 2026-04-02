@@ -11,6 +11,8 @@ import {
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "@/firebase";
 import { theme } from "@/constants/theme";
+import { setUser } from "@/redux/features/auth/authSlice";
+import { useDispatch } from "react-redux";
 
 export const LoginForm = () => {
   const [email, setEmail] = useState("");
@@ -18,6 +20,7 @@ export const LoginForm = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,6 +29,13 @@ export const LoginForm = () => {
 
     try {
       await signInWithEmailAndPassword(auth, email, password);
+      dispatch(
+        setUser({
+          displayName: auth.currentUser?.displayName || "",
+          email: auth.currentUser?.email || "",
+          uid: auth.currentUser?.uid || "",
+        }),
+      );
       navigate("/workspace");
     } catch (err: any) {
       setError(err.message.replace("Firebase: ", ""));

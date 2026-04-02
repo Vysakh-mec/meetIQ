@@ -1,8 +1,12 @@
 import { Link } from "react-router-dom";
 import { Brain } from "lucide-react";
 import { theme } from "@/constants/theme";
+import { useSelector } from "react-redux";
+import type { RootState } from "@/redux/store";
 
 export const Navbar = () => {
+  const session = useSelector((state: RootState) => state.auth);
+
   return (
     <nav style={styles.nav}>
       <Link to="/" style={styles.logoLink}>
@@ -12,16 +16,35 @@ export const Navbar = () => {
         </div>
       </Link>
       <ul style={styles.navLinks}>
-        <li><a href="#features" style={styles.navLink}>Features</a></li>
-        <li><a href="#about" style={styles.navLink}>About</a></li>
+        <li>
+          <a href="#features" style={styles.navLink}>
+            Features
+          </a>
+        </li>
+        <li>
+          <a href="#about" style={styles.navLink}>
+            About
+          </a>
+        </li>
       </ul>
       <div style={styles.navBtns}>
-        <Link to="/login" style={{ ...styles.btn, ...styles.btnSecondary }}>
-          Login
-        </Link>
-        <Link to="/signup" style={{ ...styles.btn, ...styles.btnPrimary }}>
-          Sign Up
-        </Link>
+        {session.isAuthenticated ? (
+          <Link
+            to="/workspace"
+            style={{ ...styles.btn, ...styles.btnSecondary }}
+          >
+            Go to Workspace
+          </Link>
+        ) : (
+          <>
+            <Link to="/login" style={{ ...styles.btn, ...styles.btnSecondary }}>
+              Login
+            </Link>
+            <Link to="/signup" style={{ ...styles.btn, ...styles.btnPrimary }}>
+              Sign Up
+            </Link>
+          </>
+        )}
       </div>
     </nav>
   );

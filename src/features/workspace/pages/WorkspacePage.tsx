@@ -6,13 +6,19 @@ import { theme } from "@/constants/theme";
 import { WorkspaceSidebar } from "../components/WorkspaceSidebar";
 import { TranscriptHub } from "../components/TranscriptHub";
 import { IntelligenceChat } from "../components/IntelligenceChat";
+import { useSelector } from "react-redux";
+import type { RootState } from "@/redux/store";
 
 export const WorkspacePage = () => {
   const [transcript, setTranscript] = useState<string | null>(null);
-  const [messages, setMessages] = useState<{ type: 'ai' | 'user', text: string }[]>([]);
+  const [messages, setMessages] = useState<
+    { type: "ai" | "user"; text: string }[]
+  >([]);
   const [query, setQuery] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
+  const session = useSelector((state: RootState) => state.auth);
+  console.log("Session ::", session);
 
   const handleLogout = async () => {
     try {
@@ -29,10 +35,12 @@ export const WorkspacePage = () => {
       const reader = new FileReader();
       reader.onload = (event) => {
         setTranscript(event.target?.result as string);
-        setMessages([{ 
-          type: 'ai', 
-          text: "Hello! I've analyzed your meeting transcript. How can I help you extract intelligence from it?" 
-        }]);
+        setMessages([
+          {
+            type: "ai",
+            text: "Hello! I've analyzed your meeting transcript. How can I help you extract intelligence from it?",
+          },
+        ]);
       };
       reader.readAsText(file);
     }
@@ -42,32 +50,38 @@ export const WorkspacePage = () => {
     e.preventDefault();
     if (!query.trim()) return;
 
-    setMessages([...messages, { type: 'user', text: query }]);
+    setMessages([...messages, { type: "user", text: query }]);
     setQuery("");
-    
+
     setTimeout(() => {
-      setMessages(prev => [...prev, { 
-        type: 'ai', 
-        text: "I'm processing that question based on the transcript above. (AI Engine pending integration...)" 
-      }]);
+      setMessages((prev) => [
+        ...prev,
+        {
+          type: "ai",
+          text: "I'm processing that question based on the transcript above. (AI Engine pending integration...)",
+        },
+      ]);
     }, 1000);
   };
 
   return (
     <div style={styles.page}>
-      <WorkspaceSidebar 
-        onLogout={handleLogout} 
-        onNewSession={() => { setTranscript(null); setMessages([]); }} 
+      <WorkspaceSidebar
+        onLogout={handleLogout}
+        onNewSession={() => {
+          setTranscript(null);
+          setMessages([]);
+        }}
       />
-      
+
       <main style={styles.main}>
-        <TranscriptHub 
+        <TranscriptHub
           transcript={transcript}
           fileInputRef={fileInputRef}
           onFileUpload={handleFileUpload}
         />
 
-        <IntelligenceChat 
+        <IntelligenceChat
           transcript={transcript}
           messages={messages}
           query={query}

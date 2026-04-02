@@ -7,13 +7,13 @@ interface AuthState {
     email: string | null;
     displayName: string | null;
   } | null;
-  loading: boolean;
+  isAuthenticated: boolean;
   error: string | null;
 }
 
 const initialState: AuthState = {
   user: null,
-  loading: false,
+  isAuthenticated: false,
   error: null,
 };
 
@@ -23,23 +23,20 @@ const authSlice = createSlice({
   reducers: {
     setUser: (state, action: PayloadAction<AuthState['user']>) => {
       state.user = action.payload;
-      state.loading = false;
+      state.isAuthenticated = true;
       state.error = null;
-    },
-    setLoading: (state, action: PayloadAction<boolean>) => {
-      state.loading = action.payload;
     },
     setError: (state, action: PayloadAction<string | null>) => {
       state.error = action.payload;
-      state.loading = false;
+      state.isAuthenticated = false;
     },
     logout: (state) => {
       state.user = null;
-      state.loading = false;
+      state.isAuthenticated = false;
       state.error = null;
     },
   },
 });
 
-export const { setUser, setLoading, setError, logout } = authSlice.actions;
+export const { setUser, setError, logout } = authSlice.actions;
 export default authSlice.reducer;

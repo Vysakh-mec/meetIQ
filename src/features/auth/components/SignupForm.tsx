@@ -9,8 +9,11 @@ import {
   Loader2,
 } from "lucide-react";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-import { auth } from "@/firebase";
+import { auth, db } from "@/firebase";
 import { theme } from "@/constants/theme";
+import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import { useDispatch } from "react-redux";
+import { setUser } from "@/redux/features/auth/authSlice";
 
 export const SignupForm = () => {
   const [name, setName] = useState("");
@@ -19,6 +22,7 @@ export const SignupForm = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,6 +38,22 @@ export const SignupForm = () => {
       await updateProfile(userCredential.user, {
         displayName: name,
       });
+
+      let user = {
+        displayName: name,
+        email: email,
+        uid: userCredential.user.uid,
+        createdAt: serverTimestamp(),
+      };
+      await addDoc(collection(db, "users"), user);
+
+      dispatch(
+        setUser({
+          displayName: name,
+          email: email,
+          uid: userCredential.user.uid,
+        }),
+      );
       navigate("/workspace");
     } catch (err: any) {
       setError(err.message.replace("Firebase: ", ""));
