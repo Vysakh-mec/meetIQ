@@ -1,5 +1,12 @@
 import { Link } from "react-router-dom";
-import { Plus, Brain, LogOut, FileText, EllipsisVertical, Loader2 } from "lucide-react";
+import {
+  Plus,
+  Brain,
+  LogOut,
+  FileText,
+  EllipsisVertical,
+  Loader2,
+} from "lucide-react";
 import { theme } from "@/constants/theme";
 
 interface SidebarProps {
@@ -35,11 +42,26 @@ export const WorkspaceSidebar = ({
     <div style={styles.sidebarScroll}>
       <p style={styles.sidebarLabel}>RECENT SESSIONS</p>
       {isLoading ? (
-        <div style={{ display: 'flex', justifyContent: 'center', padding: '20px' }}>
-          <Loader2 size={24} color={theme.colors.primary} className="animate-spin" style={{ animation: 'spin 1s linear infinite' }} />
+        <div
+          style={{ display: "flex", justifyContent: "center", padding: "20px" }}
+        >
+          <Loader2
+            size={24}
+            color={theme.colors.primary}
+            className="animate-spin"
+            style={{ animation: "spin 1s linear infinite" }}
+          />
         </div>
       ) : conversations.length === 0 ? (
-        <p style={{ ...styles.sidebarLabel, textAlign: 'center', marginTop: '20px' }}>No sessions yet</p>
+        <p
+          style={{
+            ...styles.sidebarLabel,
+            textAlign: "center",
+            marginTop: "20px",
+          }}
+        >
+          No sessions yet
+        </p>
       ) : (
         conversations.map((conversation) => (
           <div

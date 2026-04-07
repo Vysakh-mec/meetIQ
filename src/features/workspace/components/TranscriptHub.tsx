@@ -127,7 +127,7 @@ export const TranscriptHub = ({
               </p>
             </div>
           ) : (
-            <IntelligenceSummary data={intelligenceData} />
+            <IntelligenceSummary data={intelligenceData} title={title} />
           )}
         </div>
       </>

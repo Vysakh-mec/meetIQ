@@ -78,6 +78,7 @@ export const WorkspacePage = () => {
       } else {
         setConversations([]);
         setIsInitialLoading(false);
+        navigate("/login");
       }
     });
 
@@ -154,7 +155,7 @@ export const WorkspacePage = () => {
             // Refresh conversations and set the new one as active
             const updatedConvs = await fetchConversations();
             if (updatedConvs && updatedConvs.length > 0) {
-              const currentNew = updatedConvs.find(c => c.id === docId);
+              const currentNew = updatedConvs.find((c) => c.id === docId);
               if (currentNew) {
                 setActiveConversation(currentNew);
               }
