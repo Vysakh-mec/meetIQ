@@ -4,8 +4,8 @@ import {
   Brain,
   LogOut,
   FileText,
-  EllipsisVertical,
   Loader2,
+  ChevronRight,
 } from "lucide-react";
 import { theme } from "@/constants/theme";
 
@@ -76,17 +76,13 @@ export const WorkspaceSidebar = ({
           >
             <FileText size={18} />
             <span style={styles.sidebarItemTxt}>{conversation.title}</span>
-            <EllipsisVertical
+            <ChevronRight
               size={14}
               style={{ marginLeft: "auto", opacity: 0.5 }}
             />
           </div>
         ))
       )}
-      {/* <div style={styles.sidebarItem}>
-        <FileText size={18} />
-        <span style={styles.sidebarItemTxt}>Project Kickoff.txt</span>
-      </div> */}
     </div>
 
     <button style={styles.logoutBtn} onClick={onLogout}>

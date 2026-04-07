@@ -64,15 +64,8 @@ export const WorkspacePage = () => {
       if (user) {
         setIsInitialLoading(true);
         const convs = await fetchConversations();
-        if (convs) {
-          setConversations(convs);
-          if (convs.length > 0 && !activeConversation) {
-            setActiveConversation(convs[0]);
-            const chats = await fetchChats();
-            if (chats) {
-              console.log("Chats:", chats);
-            }
-          }
+        if (convs && convs.length > 0 && !activeConversation) {
+          setActiveConversation(convs[0]);
         }
         setIsInitialLoading(false);
       } else {
@@ -83,24 +76,53 @@ export const WorkspacePage = () => {
     });
 
     return () => unsubAuth();
-  }, []);
+  }, [navigate]);
 
   useEffect(() => {
-    if (activeConversation) {
-      setTranscript(activeConversation.transcript);
-      if (activeConversation.summary) {
-        setIntelligence({
-          goal: activeConversation.goal || "",
-          decisions: activeConversation.decisions || [],
-          actions: activeConversation.actions || [],
-          issues: activeConversation.issues || [],
-          summary: activeConversation.summary || "",
-          highlights: activeConversation.highlights || [],
-        });
-      } else {
-        setIntelligence(null);
+    const loadConversationData = async () => {
+      if (activeConversation) {
+        setTranscript(activeConversation.transcript);
+        if (activeConversation.summary) {
+          setIntelligence({
+            goal: activeConversation.goal || "",
+            decisions: activeConversation.decisions || [],
+            actions: activeConversation.actions || [],
+            issues: activeConversation.issues || [],
+            summary: activeConversation.summary || "",
+            highlights: activeConversation.highlights || [],
+          });
+
+          // Fetch chat history for this conversation
+          setIsChatLoading(true);
+          const chats = await fetchChats(activeConversation);
+          if (chats && chats.length > 0) {
+            const historyMessages = chats.flatMap((chat: any) => [
+              { type: "user" as const, text: chat.question },
+              {
+                type: "ai" as const,
+                text: chat.answer,
+                reference: chat.reference,
+              },
+            ]);
+            setMessages(historyMessages);
+          } else {
+            // Initial completion message if no chat history exists but summary does
+            setMessages([
+              {
+                type: "ai",
+                text: `Analysis complete! I've extracted the meeting's goal, actions, and key decisions. How can I help you further?`,
+              },
+            ]);
+          }
+          setIsChatLoading(false);
+        } else {
+          setIntelligence(null);
+          setMessages([]);
+        }
       }
-    }
+    };
+
+    loadConversationData();
   }, [activeConversation]);
 
   const handleLogout = async () => {
@@ -302,7 +324,7 @@ export const WorkspacePage = () => {
       console.log("Answer", answer);
       console.log("Reference", reference);
       const docRef = await addDoc(
-        collection(db, "chatHistory", conversationId, "chats"),
+        collection(db, "conversations", conversationId, "chats"),
         {
           question,
           answer,
@@ -316,14 +338,20 @@ export const WorkspacePage = () => {
     }
   };
 
-  const fetchChats = async () => {
+  const fetchChats = async (convo: any) => {
     try {
       if (!auth.currentUser) {
         console.log("No user");
         return;
       }
+      console.log(convo?.id || activeConversation?.id);
       const q = query(
-        collection(db, "conversations", activeConversation?.id, "chats"),
+        collection(
+          db,
+          "conversations",
+          convo?.id || activeConversation?.id,
+          "chats",
+        ),
         orderBy("createdAt", "asc"),
       );
       const querySnapshot = await getDocs(q);
