@@ -18,7 +18,7 @@ import autoTable from "jspdf-autotable";
 interface Action {
   person: string;
   task: string;
-  deadline: string;
+  deadline: string | null;
 }
 
 interface Issue {
@@ -69,7 +69,7 @@ export const IntelligenceSummary = ({
     csvRows.push("Task,Assignee,Deadline");
     data.actions.forEach((a) =>
       csvRows.push(
-        `"${a.task.replace(/"/g, '""')}","${a.person.replace(/"/g, '""')}","${(a.deadline || "TBD").replace(/"/g, '""')}"`,
+        `"${a.task.replace(/"/g, '""')}","${a.person.replace(/"/g, '""')}","${(a.deadline && a.deadline !== "null" ? a.deadline : "Not mentioned").replace(/"/g, '""')}"`,
       ),
     );
     csvRows.push("");
@@ -154,7 +154,11 @@ export const IntelligenceSummary = ({
     autoTable(doc, {
       startY: currentY,
       head: [["Task", "Assignee", "Deadline"]],
-      body: data.actions.map((a) => [a.task, a.person, a.deadline || "TBD"]),
+      body: data.actions.map((a) => [
+        a.task,
+        a.person,
+        a.deadline && a.deadline !== "null" ? a.deadline : "Not mentioned",
+      ]),
       theme: "striped",
       headStyles: { fillColor: [59, 130, 246] },
       margin: { top: 10 },
@@ -316,7 +320,10 @@ export const IntelligenceSummary = ({
                   </td>
                   <td style={styles.td}>
                     <div style={styles.iconCell}>
-                      <Clock size={14} /> {action.deadline || "TBD"}
+                      <Clock size={14} />{" "}
+                      {action.deadline && action.deadline !== "null"
+                        ? action.deadline
+                        : "Not mentioned"}
                     </div>
                   </td>
                 </tr>
