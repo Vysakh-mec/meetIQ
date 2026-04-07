@@ -1,3 +1,5 @@
+[![Netlify Status](https://api.netlify.com/api/v1/badges/de3801aa-4f30-403d-894a-7b358e20545d/deploy-status)](https://app.netlify.com/projects/meetiq-ai/deploys)
+
 # meetIQ 🧠
 
 **meetIQ** is an AI-powered meeting intelligence platform designed to transform long, messy transcripts into structured, actionable insights. By leveraging advanced AI models, it helps teams reclaim their time and eliminate redundant work cycles.
