@@ -1,13 +1,24 @@
 import { Link } from "react-router-dom";
-import { Plus, Brain, LogOut, FileText, ChevronRight } from "lucide-react";
+import { Plus, Brain, LogOut, FileText, EllipsisVertical, Loader2 } from "lucide-react";
 import { theme } from "@/constants/theme";
 
 interface SidebarProps {
   onLogout: () => void;
   onNewSession: () => void;
+  conversations: any[];
+  activeConversation: any;
+  setActiveConversation: (conversation: any) => void;
+  isLoading?: boolean;
 }
 
-export const WorkspaceSidebar = ({ onLogout, onNewSession }: SidebarProps) => (
+export const WorkspaceSidebar = ({
+  onLogout,
+  onNewSession,
+  conversations,
+  activeConversation,
+  setActiveConversation,
+  isLoading,
+}: SidebarProps) => (
   <aside style={styles.sidebar}>
     <header style={{ marginBottom: "32px" }}>
       <Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
@@ -23,15 +34,37 @@ export const WorkspaceSidebar = ({ onLogout, onNewSession }: SidebarProps) => (
 
     <div style={styles.sidebarScroll}>
       <p style={styles.sidebarLabel}>RECENT SESSIONS</p>
-      <div style={{ ...styles.sidebarItem, ...styles.sidebarItemActive }}>
-        <FileText size={18} />
-        <span style={styles.sidebarItemTxt}>Quarterly Review.txt</span>
-        <ChevronRight size={14} style={{ marginLeft: "auto", opacity: 0.5 }} />
-      </div>
-      <div style={styles.sidebarItem}>
+      {isLoading ? (
+        <div style={{ display: 'flex', justifyContent: 'center', padding: '20px' }}>
+          <Loader2 size={24} color={theme.colors.primary} className="animate-spin" style={{ animation: 'spin 1s linear infinite' }} />
+        </div>
+      ) : conversations.length === 0 ? (
+        <p style={{ ...styles.sidebarLabel, textAlign: 'center', marginTop: '20px' }}>No sessions yet</p>
+      ) : (
+        conversations.map((conversation) => (
+          <div
+            key={conversation.id}
+            onClick={() => setActiveConversation(conversation)}
+            style={{
+              ...styles.sidebarItem,
+              ...(activeConversation?.id === conversation.id
+                ? styles.sidebarItemActive
+                : {}),
+            }}
+          >
+            <FileText size={18} />
+            <span style={styles.sidebarItemTxt}>{conversation.title}</span>
+            <EllipsisVertical
+              size={14}
+              style={{ marginLeft: "auto", opacity: 0.5 }}
+            />
+          </div>
+        ))
+      )}
+      {/* <div style={styles.sidebarItem}>
         <FileText size={18} />
         <span style={styles.sidebarItemTxt}>Project Kickoff.txt</span>
-      </div>
+      </div> */}
     </div>
 
     <button style={styles.logoutBtn} onClick={onLogout}>

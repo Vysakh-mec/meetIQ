@@ -1,7 +1,7 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
 const genAi = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY);
-const model = genAi.getGenerativeModel({ model: "gemini-3-flash-preview" });
+const model = genAi.getGenerativeModel({ model: "gemini-2.5-flash" });
 
 export const extractMeetingInsights = async (transcript: string) => {
   const prompt = `
@@ -69,5 +69,49 @@ ${transcript}
   } catch (err) {
     console.error("AI RAW OUTPUT:", raw);
     throw err;
+  }
+};
+
+export const askQuestion = async (transcript: string, question: string) => {
+  console.log("Ask Question Function is running");
+  console.log("Transcript coming", transcript);
+  const trimmed = transcript.slice(0, 12000);
+
+  const prompt = `You are an AI assistant that answers questions about a meeting transcript.
+
+IMPORTANT:
+- If the question is short or ambiguous (like "what was the goal"),
+  assume it refers to the meeting.
+- Always interpret questions in the context of the meeting.
+
+Answer clearly and concisely.
+
+If not found, say "Not mentioned in the meeting".
+
+Return JSON:
+
+{
+  "answer": "",
+  "reference": ""
+}
+
+Transcript:
+${trimmed}
+
+Question:
+${question}
+`;
+  const result = await model.generateContent(prompt);
+  const response = await result.response;
+
+  let raw = response.text();
+  raw = raw.replace(/```json|```/g, "").trim();
+
+  try {
+    console.log(JSON.parse(raw));
+    return JSON.parse(raw);
+  } catch (error) {
+    console.error("Chat parse Error:", error);
+    throw error;
   }
 };

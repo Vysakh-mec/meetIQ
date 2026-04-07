@@ -1,9 +1,11 @@
-import { MessageSquare, Send } from "lucide-react";
+import { useRef, useEffect } from "react";
+import { MessageSquare, Send, Loader2 } from "lucide-react";
 import { theme } from "@/constants/theme";
 
 interface Message {
-  type: 'ai' | 'user';
+  type: "ai" | "user";
   text: string;
+  reference?: string;
 }
 
 interface IntelligenceChatProps {
@@ -12,50 +14,102 @@ interface IntelligenceChatProps {
   query: string;
   onQueryChange: (val: string) => void;
   onSendMessage: (e: React.FormEvent) => void;
+  isTyping?: boolean;
 }
 
-export const IntelligenceChat = ({ 
-  transcript, 
-  messages, 
-  query, 
-  onQueryChange, 
-  onSendMessage 
-}: IntelligenceChatProps) => (
-  <section style={styles.chatSection}>
-    {transcript && (
-      <>
-        <div style={styles.chatHistory}>
-          {messages.map((m, i) => (
-            <div key={i} style={{ 
-              ...styles.message, 
-              ...(m.type === 'ai' ? styles.messageAi : styles.messageUser) 
-            }}>
-              {m.text}
-            </div>
-          ))}
-        </div>
+export const IntelligenceChat = ({
+  transcript,
+  messages,
+  query,
+  onQueryChange,
+  onSendMessage,
+  isTyping,
+}: IntelligenceChatProps) => {
+  const scrollRef = useRef<HTMLDivElement>(null);
 
-        <form onSubmit={onSendMessage} style={styles.chatInputWrapper}>
-          <input 
-            style={styles.chatInput} 
-            placeholder="Ask a question..."
-            value={query}
-            onChange={(e) => onQueryChange(e.target.value)}
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    }
+  }, [messages, isTyping]);
+
+  return (
+    <section style={styles.chatSection}>
+      {transcript && (
+        <>
+          <div style={styles.chatHistory} ref={scrollRef}>
+            {messages.map((m, i) => (
+              <div
+                key={i}
+                style={{
+                  ...styles.message,
+                  ...(m.type === "ai" ? styles.messageAi : styles.messageUser),
+                }}
+              >
+                <div>{m.text}</div>
+                {m.reference && (
+                  <div style={styles.reference}>
+                    <span style={{ fontWeight: 700, fontSize: "0.65rem" }}>
+                      REFERENCE:
+                    </span>
+                    <p style={{ margin: "4px 0 0", fontStyle: "italic" }}>
+                      "{m.reference}"
+                    </p>
+                  </div>
+                )}
+              </div>
+            ))}
+            {isTyping && (
+              <div
+                style={{
+                  ...styles.message,
+                  ...styles.messageAi,
+                  display: "flex",
+                  gap: "8px",
+                  alignItems: "center",
+                }}
+              >
+                <Loader2
+                  size={14}
+                  className="animate-spin"
+                  style={{ animation: "spin 1s linear infinite" }}
+                />
+                <span style={{ fontSize: "0.8rem", opacity: 0.7 }}>
+                  Thinking...
+                </span>
+              </div>
+            )}
+          </div>
+
+          <form onSubmit={onSendMessage} style={styles.chatInputWrapper}>
+            <input
+              style={styles.chatInput}
+              placeholder="Ask a question..."
+              value={query}
+              onChange={(e) => onQueryChange(e.target.value)}
+            />
+            <button type="submit" style={styles.sendBtn}>
+              <Send size={18} />
+            </button>
+          </form>
+        </>
+      )}
+      {!transcript && (
+        <div style={styles.chatEmpty}>
+          <MessageSquare
+            size={48}
+            style={{ marginBottom: "16px", opacity: 0.3 }}
           />
-          <button type="submit" style={styles.sendBtn}>
-            <Send size={18} />
-          </button>
-        </form>
-      </>
-    )}
-    {!transcript && (
-      <div style={styles.chatEmpty}>
-        <MessageSquare size={48} style={{ marginBottom: '16px', opacity: 0.3 }} />
-        <p style={{ opacity: 0.5 }}>Upload a transcript to start<br/>asking questions.</p>
-      </div>
-    )}
-  </section>
-);
+          <p style={{ opacity: 0.5 }}>
+            Upload a transcript to start
+            <br />
+            asking questions.
+          </p>
+        </div>
+      )}
+    </section>
+  );
+};
 
 const styles: Record<string, React.CSSProperties> = {
   chatSection: {
@@ -65,6 +119,10 @@ const styles: Record<string, React.CSSProperties> = {
     display: "flex",
     flexDirection: "column",
     padding: "24px",
+    paddingRight: 0,
+    minHeight: 0, // This is key for grid/flex items to scroll
+    maxHeight: "100vh",
+    scrollbarColor: `${theme.colors.bgGlass} transparent`,
   },
   chatHistory: {
     flex: 1,
@@ -89,6 +147,14 @@ const styles: Record<string, React.CSSProperties> = {
     backgroundColor: theme.colors.primary,
     color: "white",
     alignSelf: "flex-end",
+    marginRight: "12px",
+  },
+  reference: {
+    marginTop: "12px",
+    paddingTop: "12px",
+    borderTop: `1px solid ${theme.colors.borderGlass}`,
+    fontSize: "0.75rem",
+    color: theme.colors.textMuted,
   },
   chatInputWrapper: {
     display: "flex",
@@ -97,6 +163,7 @@ const styles: Record<string, React.CSSProperties> = {
     border: `1px solid ${theme.colors.borderGlass}`,
     borderRadius: theme.radius.md,
     padding: "8px",
+    marginRight: "20px",
   },
   chatInput: {
     flex: 1,
