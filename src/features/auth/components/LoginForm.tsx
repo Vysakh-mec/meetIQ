@@ -1,13 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import {
-  Mail,
-  Lock,
-  Globe,
-  ArrowRight,
-  ChevronLeft,
-  Loader2,
-} from "lucide-react";
+import { Mail, Lock, ArrowRight, ChevronLeft, Loader2 } from "lucide-react";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "@/firebase";
 import { theme } from "@/constants/theme";
@@ -98,17 +91,6 @@ export const LoginForm = () => {
           )}
           {!loading && <ArrowRight size={20} />}
         </button>
-
-        {/* <div style={styles.divider}>OR</div>
-
-        <div style={styles.socialBtns}>
-          <button type="button" style={styles.socialBtn}>
-            <Globe size={20} /> Google
-          </button>
-          <button type="button" style={styles.socialBtn}>
-            <Globe size={20} /> GitHub
-          </button>
-        </div> */}
 
         <p style={styles.switchTxt}>
           New to meetIQ?{" "}
